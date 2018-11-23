@@ -130,6 +130,36 @@
         </socketUses>
       </module>
     </gadgeteerModelHasGadgeteerHardware>
+    <gadgeteerModelHasGadgeteerHardware Id="a3b557cf-5567-4768-ba81-1e5f3b28edb9">
+      <module Id="6ede202f-8308-4819-8db8-a30650c28a1e" cachedDefinition="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;ModuleDefinition xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; Name=&quot;Moisture&quot; Manufacturer=&quot;GHI Electronics&quot; Description=&quot;A Moisture module&quot; Type=&quot;Gadgeteer.Modules.GHIElectronics.Moisture&quot; HardwareVersion=&quot;1.0&quot; Image=&quot;C:\Program Files (x86)\GHI Electronics\.NET Gadgeteer SDK\Modules\Moisture\Image.jpg&quot; BoardWidth=&quot;32&quot; BoardHeight=&quot;70&quot; MinimumGadgeteerCoreVersion=&quot;2.43.800&quot; HelpUrl=&quot;http://www.ghielectronics.com/catalog/product/326&quot; UniqueId=&quot;f9866123-6e15-4e83-8bc0-6aff208c56bf&quot; InstanceName=&quot;moisture&quot; ModuleSuppliesPower=&quot;false&quot;&gt;&#xD;&#xA;  &lt;Power&gt;&#xD;&#xA;    &lt;PowerRequirements Voltage=&quot;3.3&quot;&gt;&#xD;&#xA;      &lt;TypicalCurrent&gt;0&lt;/TypicalCurrent&gt;&#xD;&#xA;      &lt;MaximumCurrent&gt;0&lt;/MaximumCurrent&gt;&#xD;&#xA;    &lt;/PowerRequirements&gt;&#xD;&#xA;    &lt;PowerRequirements Voltage=&quot;5&quot;&gt;&#xD;&#xA;      &lt;TypicalCurrent&gt;0&lt;/TypicalCurrent&gt;&#xD;&#xA;      &lt;MaximumCurrent&gt;0&lt;/MaximumCurrent&gt;&#xD;&#xA;    &lt;/PowerRequirements&gt;&#xD;&#xA;  &lt;/Power&gt;&#xD;&#xA;  &lt;ProvidedSockets /&gt;&#xD;&#xA;  &lt;Assemblies&gt;&#xD;&#xA;    &lt;Assembly MFVersion=&quot;4.3&quot; Name=&quot;GTM.GHIElectronics.Moisture&quot; /&gt;&#xD;&#xA;  &lt;/Assemblies&gt;&#xD;&#xA;  &lt;LibrariesProvided /&gt;&#xD;&#xA;  &lt;Sockets&gt;&#xD;&#xA;    &lt;Socket Orientation=&quot;270&quot; Left=&quot;15&quot; Top=&quot;3&quot; TypesLabel=&quot;A&quot; ConstructorOrder=&quot;1&quot; Optional=&quot;false&quot;&gt;&#xD;&#xA;      &lt;Types&gt;&#xD;&#xA;        &lt;Type&gt;A&lt;/Type&gt;&#xD;&#xA;      &lt;/Types&gt;&#xD;&#xA;      &lt;Pins&gt;&#xD;&#xA;        &lt;Pin Shared=&quot;false&quot;&gt;3&lt;/Pin&gt;&#xD;&#xA;        &lt;Pin Shared=&quot;false&quot;&gt;6&lt;/Pin&gt;&#xD;&#xA;      &lt;/Pins&gt;&#xD;&#xA;    &lt;/Socket&gt;&#xD;&#xA;  &lt;/Sockets&gt;&#xD;&#xA;  &lt;ExtraLibrariesRequired /&gt;&#xD;&#xA;&lt;/ModuleDefinition&gt;" name="moisture" moduleType="Gadgeteer.Modules.GHIElectronics.Moisture" moduleDefinitionId="f9866123-6e15-4e83-8bc0-6aff208c56bf">
+        <socketUses>
+          <moduleHasSocketUses Id="d5c2d8f6-8b48-41d6-ae43-1a18f753a91c">
+            <socketUse Id="13062224-be74-474b-b903-aee33d3fa074" label="A">
+              <socket>
+                <socketUseReferencesSocket Id="74102a58-83c6-4a02-8614-d6947d9fb11b">
+                  <socketMoniker Id="7bfb93e9-e36a-4c75-9a56-e6ff1b7cda3e" />
+                </socketUseReferencesSocket>
+              </socket>
+            </socketUse>
+          </moduleHasSocketUses>
+        </socketUses>
+      </module>
+    </gadgeteerModelHasGadgeteerHardware>
+    <gadgeteerModelHasGadgeteerHardware Id="e2d9d807-c6e7-4922-acfa-33da2bca0922">
+      <module Id="e4504b20-ea0c-4d6f-aa2b-e1bd1bbfe7ff" cachedDefinition="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;ModuleDefinition xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; Name=&quot;GasSense&quot; Manufacturer=&quot;GHI Electronics&quot; Description=&quot;A GasSense module&quot; Type=&quot;Gadgeteer.Modules.GHIElectronics.GasSense&quot; HardwareVersion=&quot;1.1&quot; Image=&quot;C:\Program Files (x86)\GHI Electronics\.NET Gadgeteer SDK\Modules\GasSense\Image.jpg&quot; BoardWidth=&quot;32&quot; BoardHeight=&quot;32&quot; MinimumGadgeteerCoreVersion=&quot;2.43.800&quot; HelpUrl=&quot;http://www.ghielectronics.com/catalog/product/393&quot; UniqueId=&quot;f55c7e04-4ba5-4bde-b0b8-301e6cfc320d&quot; InstanceName=&quot;gasSense&quot; ModuleSuppliesPower=&quot;false&quot;&gt;&#xD;&#xA;  &lt;Power&gt;&#xD;&#xA;    &lt;PowerRequirements Voltage=&quot;3.3&quot;&gt;&#xD;&#xA;      &lt;TypicalCurrent&gt;0&lt;/TypicalCurrent&gt;&#xD;&#xA;      &lt;MaximumCurrent&gt;0&lt;/MaximumCurrent&gt;&#xD;&#xA;    &lt;/PowerRequirements&gt;&#xD;&#xA;    &lt;PowerRequirements Voltage=&quot;5&quot;&gt;&#xD;&#xA;      &lt;TypicalCurrent&gt;0&lt;/TypicalCurrent&gt;&#xD;&#xA;      &lt;MaximumCurrent&gt;0&lt;/MaximumCurrent&gt;&#xD;&#xA;    &lt;/PowerRequirements&gt;&#xD;&#xA;  &lt;/Power&gt;&#xD;&#xA;  &lt;ProvidedSockets /&gt;&#xD;&#xA;  &lt;Assemblies&gt;&#xD;&#xA;    &lt;Assembly MFVersion=&quot;4.2&quot; Name=&quot;GTM.GHIElectronics.GasSense&quot; /&gt;&#xD;&#xA;    &lt;Assembly MFVersion=&quot;4.3&quot; Name=&quot;GTM.GHIElectronics.GasSense&quot; /&gt;&#xD;&#xA;  &lt;/Assemblies&gt;&#xD;&#xA;  &lt;LibrariesProvided /&gt;&#xD;&#xA;  &lt;Sockets&gt;&#xD;&#xA;    &lt;Socket Orientation=&quot;180&quot; Left=&quot;27&quot; Top=&quot;16&quot; TypesLabel=&quot;A&quot; ConstructorOrder=&quot;1&quot; Optional=&quot;false&quot;&gt;&#xD;&#xA;      &lt;Types&gt;&#xD;&#xA;        &lt;Type&gt;A&lt;/Type&gt;&#xD;&#xA;      &lt;/Types&gt;&#xD;&#xA;      &lt;Pins&gt;&#xD;&#xA;        &lt;Pin Shared=&quot;false&quot;&gt;3&lt;/Pin&gt;&#xD;&#xA;        &lt;Pin Shared=&quot;false&quot;&gt;4&lt;/Pin&gt;&#xD;&#xA;      &lt;/Pins&gt;&#xD;&#xA;    &lt;/Socket&gt;&#xD;&#xA;  &lt;/Sockets&gt;&#xD;&#xA;  &lt;ExtraLibrariesRequired /&gt;&#xD;&#xA;&lt;/ModuleDefinition&gt;" name="gasSense" moduleType="Gadgeteer.Modules.GHIElectronics.GasSense" moduleDefinitionId="f55c7e04-4ba5-4bde-b0b8-301e6cfc320d">
+        <socketUses>
+          <moduleHasSocketUses Id="ddc97f71-119a-4b2c-a126-a034297eb3b2">
+            <socketUse Id="3809c77c-562a-4d13-8a78-4463b5682b70" label="A">
+              <socket>
+                <socketUseReferencesSocket Id="b5940d5b-dcf2-458a-8daf-038c517f0dd5">
+                  <socketMoniker Id="abc32a27-177e-4ee9-880e-23a9dcce92df" />
+                </socketUseReferencesSocket>
+              </socket>
+            </socketUse>
+          </moduleHasSocketUses>
+        </socketUses>
+      </module>
+    </gadgeteerModelHasGadgeteerHardware>
   </gadgeteerHardware>
   <comments>
     <gadgeteerModelHasComments Id="193317a7-f69a-48ae-8b93-7025153d3bc3">

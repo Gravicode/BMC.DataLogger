@@ -24,6 +24,12 @@ namespace DataLoggerDevice {
         /// <summary>The Display NHVN module using sockets 15, 16 and 17 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.DisplayNHVN displayNHVN;
         
+        /// <summary>The Moisture module using socket 18 of the mainboard.</summary>
+        private Gadgeteer.Modules.GHIElectronics.Moisture moisture;
+        
+        /// <summary>The GasSense module using socket 2 of the mainboard.</summary>
+        private Gadgeteer.Modules.GHIElectronics.GasSense gasSense;
+        
         /// <summary>This property provides access to the Mainboard API. This is normally not necessary for an end user program.</summary>
         protected new static GHIElectronics.Gadgeteer.FEZRaptor Mainboard {
             get {
@@ -49,6 +55,8 @@ namespace DataLoggerDevice {
             this.currentACS712 = new GTM.GHIElectronics.CurrentACS712(13);
             this.sdCard = new GTM.GHIElectronics.SDCard(9);
             this.displayNHVN = new GTM.GHIElectronics.DisplayNHVN(15, 16, 17, Socket.Unused, Socket.Unused);
+            this.moisture = new GTM.GHIElectronics.Moisture(18);
+            this.gasSense = new GTM.GHIElectronics.GasSense(2);
         }
     }
 }

@@ -74,13 +74,14 @@ namespace DataLoggerDevice
             //create grid column
             GvData.AddColumn(new DataGridColumn("Time", 200));
             GvData.AddColumn(new DataGridColumn("Current", 200));
-
+            GvData.AddColumn(new DataGridColumn("Gas", 200));
+            GvData.AddColumn(new DataGridColumn("Moisture", 200));
 
             // Create a database in memory,
             // file system is possible however!
             myDatabase = new GHI.SQLite.Database();
             myDatabase.ExecuteNonQuery("CREATE Table Sensor" +
-            " (Time TEXT, Current DOUBLE)");
+            " (Time TEXT, Current DOUBLE,Gas DOUBLE,Moisture DOUBLE)");
             //reset database n display
             BtnReset.TapEvent += (object sender) =>
             {
@@ -222,7 +223,9 @@ namespace DataLoggerDevice
                 var data = new SensorData()
                 {
                     
-                    Current = currentACS712.ReadACCurrent()
+                    Current = currentACS712.ReadACCurrent(),
+                    Gas = gasSense.ReadProportion(),
+                     Moisture=moisture.ReadMoisture()
                 };
                 var jsonStr = Json.NETMF.JsonSerializer.SerializeObject(data);
                 Debug.Print("kirim :" + jsonStr);
@@ -245,7 +248,7 @@ namespace DataLoggerDevice
                 }
                 var TimeStr = DateTime.Now.ToString("dd/MM/yy HH:mm");
                 //insert to db
-                var item = new DataGridItem(new object[] { TimeStr, data.Current });
+                var item = new DataGridItem(new object[] { TimeStr, data.Current ,data.Gas,data.Moisture});
                 //add data to grid
                 GvData.AddItem(item);
                 Counter++;
@@ -254,8 +257,8 @@ namespace DataLoggerDevice
           
 
                 //add rows to table
-                myDatabase.ExecuteNonQuery("INSERT INTO Sensor (Time, Current)" +
-                " VALUES ('" + TimeStr + "' , " + data.Current + ")");
+                myDatabase.ExecuteNonQuery("INSERT INTO Sensor (Time, Current, Gas, Moisture)" +
+                " VALUES ('" + TimeStr + "' , " + data.Current +","+ data.Gas+","+data.Moisture + ")");
                 window.Invalidate();
                 if (Counter > 10)
                 {
@@ -417,6 +420,9 @@ namespace DataLoggerDevice
     public class SensorData
     {
         public double Current { get; set; }
+        public double Gas { get; set; }
+        public double Moisture { get; set; }
+
        
     }
 
