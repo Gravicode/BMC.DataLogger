@@ -23,8 +23,7 @@ using GHI.Glide.UI;
 using GHI.Glide.Geom;
 
 using System.IO;
-using Microsoft.SPOT;
-using Microsoft.SPOT.Hardware;
+
 
 using GHI.IO;
 using GHI.IO.Storage;
@@ -38,9 +37,9 @@ namespace DataLoggerDevice2
 {
     public partial class Program
     {
-        static string DataTopic = "bmc/logger/data"; 
+        static string DataTopic = "bmc/logger/data";
 
-
+        static FTPServer ftp;
         static string FileNameLog;
         static int Delay = 2000;
         static int Counter = 0;
@@ -147,7 +146,8 @@ namespace DataLoggerDevice2
                 // get Internet Time using NTP
                 NTPTime("time.windows.com", -420);
                 PrintToLcd("time is updated:" + DateTime.Now.ToString());
-              
+                Debug.Print("Init FTP");
+                StartFTP(ip);
             };
            
 
@@ -220,7 +220,17 @@ namespace DataLoggerDevice2
             }
 
         }
-   
+
+        void StartFTP(string IP)
+        {
+            ftp = new FTPServer(IP);
+            ftp.AddLogin("bmc", "123qweasd", "\\SD\\", new FTPServer.UserPermissions(true, true, true, true, true, true));
+            ftp.AllowAnonymous = true;
+            ftp.AnonymousRoot = "\\SD\\LOGS\\";
+            ftp.DebugMode = true;
+            ftp.Start();
+        }
+
         void SendToMqtt(string Topic, string Message){
             if(Messaging!=null && Messaging.IsReady){
                 Messaging.PublishMessage(Topic,Message);
@@ -443,6 +453,7 @@ namespace DataLoggerDevice2
             
             network.UseDHCP();
             netif = network.NetworkInterface.NetworkInterface;
+            netif.EnableDhcp();
             netif.EnableDynamicDns();
             Thread th = new Thread(new ThreadStart(Connect));
             th.Start();
