@@ -8,27 +8,33 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DataLoggerDevice {
+namespace DataLoggerDevice2 {
     using Gadgeteer;
     using GTM = Gadgeteer.Modules;
     
     
     public partial class Program : Gadgeteer.Program {
         
-        /// <summary>The Current ACS712 module using socket 13 of the mainboard.</summary>
-        private Gadgeteer.Modules.GHIElectronics.CurrentACS712 currentACS712;
-        
         /// <summary>The SD Card module using socket 9 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.SDCard sdCard;
         
+        /// <summary>The Ethernet ENC28 module using socket 11 of the mainboard.</summary>
+        private Gadgeteer.Modules.GHIElectronics.EthernetENC28 ethernetENC28;
+        
+        /// <summary>The Breakout module using socket 18 of the mainboard.</summary>
+        private Gadgeteer.Modules.GHIElectronics.Breakout breakout;
+        
+        /// <summary>The Breakout module using socket 13 of the mainboard.</summary>
+        private Gadgeteer.Modules.GHIElectronics.Breakout breakout2;
+        
+        /// <summary>The USB Host module using socket 7 of the mainboard.</summary>
+        private Gadgeteer.Modules.GHIElectronics.USBHost usbHost;
+        
+        /// <summary>The Breakout module using socket 2 of the mainboard.</summary>
+        private Gadgeteer.Modules.GHIElectronics.Breakout breakout3;
+        
         /// <summary>The Display NHVN module using sockets 15, 16 and 17 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.DisplayNHVN displayNHVN;
-        
-        /// <summary>The Moisture module using socket 18 of the mainboard.</summary>
-        private Gadgeteer.Modules.GHIElectronics.Moisture moisture;
-        
-        /// <summary>The GasSense module using socket 2 of the mainboard.</summary>
-        private Gadgeteer.Modules.GHIElectronics.GasSense gasSense;
         
         /// <summary>This property provides access to the Mainboard API. This is normally not necessary for an end user program.</summary>
         protected new static GHIElectronics.Gadgeteer.FEZRaptor Mainboard {
@@ -52,11 +58,13 @@ namespace DataLoggerDevice {
         }
         
         private void InitializeModules() {
-            this.currentACS712 = new GTM.GHIElectronics.CurrentACS712(13);
             this.sdCard = new GTM.GHIElectronics.SDCard(9);
-            this.displayNHVN = new GTM.GHIElectronics.DisplayNHVN(15, 16, 17);
-            this.moisture = new GTM.GHIElectronics.Moisture(18);
-            this.gasSense = new GTM.GHIElectronics.GasSense(2);
+            this.ethernetENC28 = new GTM.GHIElectronics.EthernetENC28(11);
+            this.breakout = new GTM.GHIElectronics.Breakout(18);
+            this.breakout2 = new GTM.GHIElectronics.Breakout(13);
+            this.usbHost = new GTM.GHIElectronics.USBHost(7);
+            this.breakout3 = new GTM.GHIElectronics.Breakout(2);
+            this.displayNHVN = new GTM.GHIElectronics.DisplayNHVN(15, 16, 17, Socket.Unused, Socket.Unused);
         }
     }
 }
