@@ -18,7 +18,7 @@ namespace DataLoggerDevice2 {
         /// <summary>The SD Card module using socket 9 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.SDCard sdCard;
         
-        /// <summary>The Ethernet ENC28 module using socket 11 of the mainboard.</summary>
+        /// <summary>The Ethernet ENC28 module using socket 3 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.EthernetENC28 ethernetENC28;
         
         /// <summary>The Breakout module using socket 18 of the mainboard.</summary>
@@ -59,7 +59,7 @@ namespace DataLoggerDevice2 {
         
         private void InitializeModules() {
             this.sdCard = new GTM.GHIElectronics.SDCard(9);
-            this.ethernetENC28 = new GTM.GHIElectronics.EthernetENC28(11);
+            this.ethernetENC28 = new GTM.GHIElectronics.EthernetENC28(3);
             this.breakout = new GTM.GHIElectronics.Breakout(18);
             this.breakout2 = new GTM.GHIElectronics.Breakout(13);
             this.usbHost = new GTM.GHIElectronics.USBHost(7);

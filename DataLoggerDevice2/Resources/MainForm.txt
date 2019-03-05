@@ -2,9 +2,10 @@
   <Window Name="form1" Width="800" Height="480" BackColor="e6e6e6">
     <TextBlock Name="instance438" X="10" Y="13" Width="780" Height="60" Alpha="255" Text="BMC DATA LOGGER" TextAlign="Center" TextVerticalAlign="Middle" Font="8" FontColor="0" BackColor="000000" ShowBackColor="False"/>
     <TextBlock Name="instance2060" X="12" Y="80" Width="140" Height="40" Alpha="255" Text="Transmitted:" TextAlign="Left" TextVerticalAlign="Middle" Font="6" FontColor="0" BackColor="000000" ShowBackColor="False"/>
-    <TextBlock Name="txtTime" X="166" Y="80" Width="400" Height="40" Alpha="255" Text="[datetime]" TextAlign="Left" TextVerticalAlign="Middle" Font="6" FontColor="0" BackColor="000000" ShowBackColor="False"/>
+    <TextBlock Name="txtTime" X="166" Y="80" Width="350" Height="40" Alpha="255" Text="[datetime]" TextAlign="Left" TextVerticalAlign="Middle" Font="6" FontColor="0" BackColor="000000" ShowBackColor="False"/>
     <DataGrid Name="GvData" X="12" Y="170" Width="760" Height="300" Alpha="255" Font="6" RowCount="10" RowHeight="30" Draggable="True" TappableCells="True" SortableHeaders="True" ShowHeaders="True" ShowScrollbar="True" ScrollbarWidth="4" HeadersBackColor="707476" HeadersFontColor="FFFFFF" ItemsBackColor="FFFFFF" ItemsAltBackColor="F4F4F4" ItemsFontColor="000000" SelectedItemBackColor="FFF299" SelectedItemFontColor="000000" GridColor="BFC5C9" ScrollbarBackColor="C0C0C0" ScrollbarScrubberColor="000000"/>
     <Button Name="BtnReset" X="653" Y="103" Width="120" Height="50" Alpha="255" Text="Reset" Font="6" FontColor="000000" DisabledFontColor="808080" TintColor="000000" TintAmount="0"/>
     <TextBlock Name="TxtMessage" X="12" Y="130" Width="600" Height="32" Alpha="255" Text="[Status]" TextAlign="Left" TextVerticalAlign="Top" Font="6" FontColor="0" BackColor="000000" ShowBackColor="False"/>
+    <Button Name="BtnSetting" X="523" Y="104" Width="120" Height="50" Alpha="255" Text="Settings" Font="6" FontColor="000000" DisabledFontColor="808080" TintColor="000000" TintAmount="0"/>
   </Window>
 </Glide>

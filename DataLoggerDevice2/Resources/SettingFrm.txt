@@ -1,0 +1,24 @@
+<Glide Version="1.0.7">
+  <Window Name="instance115" Width="800" Height="480" BackColor="FFFFFF">
+    <TextBlock Name="instance530" X="6" Y="9" Width="700" Height="60" Alpha="255" Text="SETTINGS" TextAlign="Left" TextVerticalAlign="Top" Font="7" FontColor="0" BackColor="000000" ShowBackColor="False"/>
+    <TextBlock Name="instance1896" X="10" Y="74" Width="150" Height="32" Alpha="255" Text="Format Logs:" TextAlign="Left" TextVerticalAlign="Top" Font="5" FontColor="0" BackColor="000000" ShowBackColor="False"/>
+    <TextBlock Name="instance3113" X="10" Y="116" Width="100" Height="32" Alpha="255" Text="DeviceID :" TextAlign="Left" TextVerticalAlign="Top" Font="5" FontColor="0" BackColor="000000" ShowBackColor="False"/>
+    <TextBlock Name="instance3486" X="10" Y="155" Width="100" Height="32" Alpha="255" Text="MQTT HOST:" TextAlign="Left" TextVerticalAlign="Top" Font="5" FontColor="0" BackColor="000000" ShowBackColor="False"/>
+    <TextBlock Name="instance4197" X="10" Y="193" Width="150" Height="32" Alpha="255" Text="MQTT USERNAME :" TextAlign="Left" TextVerticalAlign="Top" Font="5" FontColor="0" BackColor="000000" ShowBackColor="False"/>
+    <TextBlock Name="instance4538" X="10" Y="238" Width="150" Height="32" Alpha="255" Text="MQTT PASSWORD:" TextAlign="Left" TextVerticalAlign="Top" Font="5" FontColor="0" BackColor="000000" ShowBackColor="False"/>
+    <TextBlock Name="instance5449" X="10" Y="282" Width="150" Height="32" Alpha="255" Text="MQTT TOPIC:" TextAlign="Left" TextVerticalAlign="Top" Font="5" FontColor="0" BackColor="000000" ShowBackColor="False"/>
+    <Dropdown Name="CmbTypes" X="200" Y="69" Width="200" Height="32" Alpha="255" Text="Select:" Font="4" FontColor="000000">
+      <Option Value="JSON">JSON</Option>
+      <Option Value="CSV">CSV</Option>
+      <Option Value="XML">XML</Option>
+    </Dropdown>
+    <TextBox Name="TxtDeviceID" X="200" Y="112" Width="300" Height="32" Alpha="255" Text="" TextAlign="Left" Font="4" FontColor="000000"/>
+    <TextBox Name="TxtMQTTHost" X="200" Y="150" Width="300" Height="32" Alpha="255" Text="" TextAlign="Left" Font="4" FontColor="000000"/>
+
+    <TextBox Name="TxtMQTTUserName" X="200" Y="192" Width="300" Height="32" Alpha="255" Text="" TextAlign="Left" Font="4" FontColor="000000"/>
+    <TextBox Name="TxtMQTTPassword" X="200" Y="232" Width="300" Height="32" Alpha="255" Text="" TextAlign="Left" Font="4" FontColor="000000"/>
+    <TextBox Name="TxtMQTTTopic" X="200" Y="271" Width="300" Height="32" Alpha="255" Text="" TextAlign="Left" Font="4" FontColor="000000"/>
+    <Button Name="BtnSave" X="622" Y="419" Width="145" Height="32" Alpha="255" Text="Save" Font="4" FontColor="000000" DisabledFontColor="808080" TintColor="000000" TintAmount="0"/>
+    <Button Name="BtnCancel" X="459" Y="420" Width="150" Height="32" Alpha="255" Text="Cancel" Font="4" FontColor="000000" DisabledFontColor="808080" TintColor="000000" TintAmount="0"/>
+  </Window>
+</Glide>

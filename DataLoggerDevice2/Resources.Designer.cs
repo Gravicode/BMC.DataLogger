@@ -37,6 +37,7 @@ namespace DataLoggerDevice2
         internal enum StringResources : short
         {
             MainForm = -6102,
+            SettingFrm = 29408,
         }
         [System.SerializableAttribute()]
         internal enum FontResources : short

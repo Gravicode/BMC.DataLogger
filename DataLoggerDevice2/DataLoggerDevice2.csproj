@@ -40,6 +40,7 @@
   <Import Project="$(NetMfTargetsBaseDir)$(TargetFrameworkVersion)\CSharp.Targets" />
   <ItemGroup>
     <Compile Include="FTPServer.cs" />
+    <Compile Include="LogHelper.cs" />
     <Compile Include="Program.generated.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -133,5 +134,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\MainForm.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SettingFrm.txt" />
   </ItemGroup>
 </Project>

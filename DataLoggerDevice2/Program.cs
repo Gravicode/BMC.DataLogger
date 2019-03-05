@@ -37,12 +37,18 @@ namespace DataLoggerDevice2
 {
     public partial class Program
     {
+        public enum FormTypes
+        {
+            MainForm, SettingForm
+        }
+        static SettingData Config;
         static string DataTopic = "bmc/logger/data";
-
+        static FormTypes ActiveForm;
         static FTPServer ftp;
         static string FileNameLog;
         static int Delay = 2000;
         static int Counter = 0;
+        static LogHelper logs;
         EthernetNetwork net;
         GT.SocketInterfaces.AnalogInput[] InputSensors;
         DiskStorage storage;
@@ -50,9 +56,12 @@ namespace DataLoggerDevice2
         //UI
         GHI.Glide.UI.TextBlock txtTime = null;
         GHI.Glide.UI.DataGrid GvData = null;
+        GHI.Glide.UI.Button BtnSetting = null;
+
         GHI.Glide.UI.Button BtnReset = null;
         GHI.Glide.Display.Window window = null;
         GHI.Glide.UI.TextBlock txtMessage = null;
+        static string IPDevice;
         //database
         Database myDatabase = null;
         void ProgramStarted()
@@ -69,8 +78,9 @@ namespace DataLoggerDevice2
             InputSensors[6] = breakout3.CreateAnalogInput(GT.Socket.Pin.Three);
             InputSensors[7] = breakout3.CreateAnalogInput(GT.Socket.Pin.Four);
             InputSensors[8] = breakout3.CreateAnalogInput(GT.Socket.Pin.Five);
-            
-            
+
+            logs = new LogHelper(sdCard);
+            Config = logs.ReadSetting();
             //7" Displays
             Display.Width = 800;
             Display.Height = 480;
@@ -94,17 +104,52 @@ namespace DataLoggerDevice2
             //set up touch screen
             CapacitiveTouchController.Initialize(GHI.Pins.FEZRaptor.Socket14.Pin3);
 
+            LoadMainWindow();
          
             GlideTouch.Initialize();
+            storage = new DiskStorage(sdCard);
+            net = new EthernetNetwork(ethernetENC28);
+           
+            net.NetworkConnected+=(ip)=>{
+                PrintToLcd("network connected:"+ip);
+                IPDevice = ip;
+                SetupNetwork(ip);
+
+            };
+           
+
+            Thread th1 = new Thread(new ThreadStart(Loop));
+            th1.Start();
+
+        }
+        void SetupNetwork(string ip)
+        {
+            //Thread.Sleep(1000);
+            Messaging = new MqttAgent(Config.MqttHost, Config.MqttUserName, Config.MqttPassword, Config.DeviceID, Config.MqttTopic);
+            if (Messaging.IsReady) PrintToLcd("mqtt is ready");
+            //Thread.Sleep(1000);
+            // get Internet Time using NTP
+            NTPTime("time.windows.com", -420);
+            PrintToLcd("time is updated:" + DateTime.Now.ToString());
+            Debug.Print("Init FTP");
+            StartFTP(ip);
+        }
+        void LoadMainWindow()
+        {
+            BtnSave = null;
+            BtnCancel = null;
+            ActiveForm = FormTypes.MainForm;
             //set glide
             window = GlideLoader.LoadWindow(Resources.GetString(Resources.StringResources.MainForm));
 
             txtTime = (GHI.Glide.UI.TextBlock)window.GetChildByName("txtTime");
             GvData = (GHI.Glide.UI.DataGrid)window.GetChildByName("GvData");
             BtnReset = (GHI.Glide.UI.Button)window.GetChildByName("BtnReset");
+            BtnSetting = (GHI.Glide.UI.Button)window.GetChildByName("BtnSetting");
+
             txtMessage = (GHI.Glide.UI.TextBlock)window.GetChildByName("TxtMessage");
             Glide.MainWindow = window;
-            
+
             //setup grid
             //create grid column
             GvData.AddColumn(new DataGridColumn("Time", 200));
@@ -131,32 +176,88 @@ namespace DataLoggerDevice2
                 GvData.Clear();
                 GvData.Invalidate();
             };
+            BtnSetting.TapEvent += x =>
+            {
+                LoadSettingForm();
+            };
+            Glide.MainWindow = window;
+
+
+        }
+        GHI.Glide.UI.Dropdown CmbTypes;
+        GHI.Glide.UI.TextBox TxtDeviceID;
+        GHI.Glide.UI.TextBox TxtMQTTHost;
+        GHI.Glide.UI.TextBox TxtMQTTUserName;
+        GHI.Glide.UI.TextBox TxtMQTTPassword;
+        GHI.Glide.UI.TextBox TxtMQTTTopic;
+        GHI.Glide.UI.Button BtnSave;
+        GHI.Glide.UI.Button BtnCancel;
+        GHI.Glide.UI.List listMessage { set; get; }
+        public void PopulateList()
+        {
+            ArrayList options = new ArrayList();
+            options.Add(new object[2] { "JSON", "JSON" });
+            options.Add(new object[2] { "CSV", "CSV" });
+            options.Add(new object[2] { "XML", "XML" });
+
+            listMessage = new GHI.Glide.UI.List(options, 300);
+
+        }
+        void LoadSettingForm()
+        {
+            ActiveForm = FormTypes.SettingForm;
+            BtnReset = null;
+            BtnSetting = null;
+            GvData = null;
+            //set glide
+            window = GlideLoader.LoadWindow(Resources.GetString(Resources.StringResources.SettingFrm));
+
+            CmbTypes = (GHI.Glide.UI.Dropdown)window.GetChildByName("CmbTypes");
+            TxtDeviceID = (GHI.Glide.UI.TextBox)window.GetChildByName("TxtDeviceID");
+            TxtMQTTHost = (GHI.Glide.UI.TextBox)window.GetChildByName("TxtMQTTHost");
+            TxtMQTTUserName = (GHI.Glide.UI.TextBox)window.GetChildByName("TxtMQTTUserName");
+            TxtMQTTPassword = (GHI.Glide.UI.TextBox)window.GetChildByName("TxtMQTTPassword");
+            TxtMQTTTopic = (GHI.Glide.UI.TextBox)window.GetChildByName("TxtMQTTTopic");
+
+            TxtDeviceID.TapEvent += new OnTap(Glide.OpenKeyboard);
+            TxtMQTTHost.TapEvent += new OnTap(Glide.OpenKeyboard);
+            TxtMQTTPassword.TapEvent += new OnTap(Glide.OpenKeyboard);
+            TxtMQTTTopic.TapEvent += new OnTap(Glide.OpenKeyboard);
+            TxtMQTTUserName.TapEvent += new OnTap(Glide.OpenKeyboard);
+        
+            BtnSave = (GHI.Glide.UI.Button)window.GetChildByName("BtnSave");
+            BtnCancel = (GHI.Glide.UI.Button)window.GetChildByName("BtnCancel");
+            PopulateList();
+            CmbTypes.TapEvent += (object sender) =>
+            {
+                Glide.OpenList(sender, listMessage);
+            };
+            //load data
+            TxtDeviceID.Text = Config.DeviceID;
+            TxtMQTTHost.Text = Config.MqttHost;
+            TxtMQTTPassword.Text = Config.MqttPassword;
+            TxtMQTTTopic.Text = Config.MqttTopic;
+            TxtMQTTUserName.Text = Config.MqttUserName;
+            CmbTypes.Text = Config.FormatLog;
+            
+            BtnSave.TapEvent += (a) => {
+                Config.FormatLog = CmbTypes.Text;
+                Config.DeviceID = TxtDeviceID.Text;
+                Config.MqttHost = TxtMQTTHost.Text;
+                Config.MqttPassword = TxtMQTTPassword.Text;
+                Config.MqttTopic = TxtMQTTTopic.Text;
+                Config.MqttUserName = TxtMQTTUserName.Text;
+                logs.SaveSetting(Config);
+                LoadMainWindow();
+            };
+
+            BtnCancel.TapEvent += (a) => {
+                LoadMainWindow();
+            };
 
             Glide.MainWindow = window;
 
-            storage = new DiskStorage(sdCard);
-            net = new EthernetNetwork(ethernetENC28);
-           
-            net.NetworkConnected+=(ip)=>{
-                PrintToLcd("network connected:"+ip);
-                Thread.Sleep(1000);
-                Messaging = new MqttAgent("110.35.82.86", "loradev_mqtt", "test123", "BMC_Logger", DataTopic);
-                if (Messaging.IsReady) PrintToLcd("mqtt is ready");
-                Thread.Sleep(1000);
-                // get Internet Time using NTP
-                NTPTime("time.windows.com", -420);
-                PrintToLcd("time is updated:" + DateTime.Now.ToString());
-                Debug.Print("Init FTP");
-                StartFTP(ip);
-            };
-           
-
-            Thread th1 = new Thread(new ThreadStart(Loop));
-            th1.Start();
-
         }
-      
-
 
 
 
@@ -192,27 +293,33 @@ namespace DataLoggerDevice2
                 FileNameLog = "LOG_" + DateTime.Now.ToString("yyyyMMdd")+".csv";
                 var Msg = TimeStr + "," + data.A0 + "," + data.A1 + "," + data.A2 + "," + data.A3 + "," + data.A4 + "," + data.A5 + ", " + data.A6 + "," + data.A7 + "," + data.A8;
                 storage.WriteData(FileNameLog,"LOGS",Msg);
-               
-                //insert to db
-                var item = new DataGridItem(new object[] { TimeStr, data.A0, data.A1, data.A2, data.A3, data.A4, data.A5, data.A6, data.A7, data.A8 });
-                //add data to grid
-                GvData.AddItem(item);
-                Counter++;
 
-                GvData.Invalidate();
+                if (ActiveForm == FormTypes.MainForm)
+                {
+                    //insert to db
+                    var item = new DataGridItem(new object[] { TimeStr, data.A0, data.A1, data.A2, data.A3, data.A4, data.A5, data.A6, data.A7, data.A8 });
+                    //add data to grid
+                    GvData.AddItem(item);
+                    Counter++;
 
+                    GvData.Invalidate();
+                    window.Invalidate();
+                }
 
                 //add rows to table
                 myDatabase.ExecuteNonQuery("INSERT INTO Sensor (Time,A0,A1,A2,A3,A4,A5,A6,A7,A8)" +
                 " VALUES ('" + TimeStr + "' , " + data.A0 + "," + data.A1 + ", "  + data.A2 + "," + data.A3 + ", " + data.A4 + ","  + data.A5 + ", " + data.A6 + ","  + data.A7 + "," + data.A8 + ")");
-                window.Invalidate();
+                
                 if (Counter > 10)
                 {
                     //reset
                     Counter = 0;
                     myDatabase.ExecuteNonQuery("DELETE FROM Sensor");
-                    GvData.Clear();
-                    GvData.Invalidate();
+                    if (ActiveForm == FormTypes.MainForm)
+                    {
+                        GvData.Clear();
+                        GvData.Invalidate();
+                    }
                     
                 }
 
@@ -239,12 +346,15 @@ namespace DataLoggerDevice2
 
         void PrintToLcd(string Message)
         {
-            //update display
-            txtTime.Text = DateTime.Now.ToString("dd/MMM/yyyy HH:mm:ss");
-            txtMessage.Text = Message;
-            txtTime.Invalidate();
-            txtMessage.Invalidate();
-            window.Invalidate();
+            if (ActiveForm == FormTypes.MainForm)
+            {
+                //update display
+                txtTime.Text = DateTime.Now.ToString("dd/MMM/yyyy HH:mm:ss");
+                txtMessage.Text = Message;
+                txtTime.Invalidate();
+                txtMessage.Invalidate();
+                window.Invalidate();
+            }
         }
 
         public bool NTPTime(string TimeServer, int GmtOffset = 0)
@@ -455,6 +565,7 @@ namespace DataLoggerDevice2
             netif = network.NetworkInterface.NetworkInterface;
             netif.EnableDhcp();
             netif.EnableDynamicDns();
+            //Connect();
             Thread th = new Thread(new ThreadStart(Connect));
             th.Start();
         }
@@ -529,5 +640,20 @@ namespace DataLoggerDevice2
             }
             Debug.Print("Data is received");
         }
+    }
+    public class SettingData
+    {
+        public string FormatLog { get; set; }
+        public string  MqttTopic { get; set; }
+        public string MqttPassword { get; set; }
+        public string MqttUserName { get; set; }
+        public string MqttHost { get; set; }
+        public string DeviceID { get; set; }
+        public static SettingData GetDefaultValue()
+        {
+            //"", "", "", ""
+            return new SettingData() { DeviceID = "BMC_Logger", MqttHost = "110.35.82.86", MqttPassword = "test123", MqttTopic = "bmc/logger/data", MqttUserName = "loradev_mqtt", FormatLog="CSV" };
+        }
+    
     }
 }

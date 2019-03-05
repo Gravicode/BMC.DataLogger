@@ -82,8 +82,8 @@
           <moduleHasSocketUses Id="92d540c5-e512-4344-94d9-b3a4e613e6c9">
             <socketUse Id="f3539d0b-847e-4fee-9b8e-40497d9df7c2" label="S">
               <socket>
-                <socketUseReferencesSocket Id="0d3f09d9-accd-46ce-b298-1dc1fb976104">
-                  <socketMoniker Id="b2a13cac-2e88-403f-ad79-5c8af27930cb" />
+                <socketUseReferencesSocket Id="0ce84111-4331-45fc-a235-9e2a57a0b02a">
+                  <socketMoniker Id="f43028de-f431-41d3-84b3-c1b68d1e9e99" />
                 </socketUseReferencesSocket>
               </socket>
             </socketUse>
