@@ -105,8 +105,8 @@ namespace DataLoggerDevice2
             CapacitiveTouchController.Initialize(GHI.Pins.FEZRaptor.Socket14.Pin3);
 
             LoadMainWindow();
-         
             GlideTouch.Initialize();
+         
             storage = new DiskStorage(sdCard);
             net = new EthernetNetwork(ethernetENC28);
            
@@ -148,8 +148,7 @@ namespace DataLoggerDevice2
             BtnSetting = (GHI.Glide.UI.Button)window.GetChildByName("BtnSetting");
 
             txtMessage = (GHI.Glide.UI.TextBlock)window.GetChildByName("TxtMessage");
-            Glide.MainWindow = window;
-
+            
             //setup grid
             //create grid column
             GvData.AddColumn(new DataGridColumn("Time", 200));
