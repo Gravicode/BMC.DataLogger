@@ -49,7 +49,7 @@ namespace DataLoggerDevice2
         static int Delay = 2000;
         static int Counter = 0;
         static LogHelper logs;
-        EthernetNetwork net;
+        WifiNetwork net;
         GT.SocketInterfaces.AnalogInput[] InputSensors;
         DiskStorage storage;
         MqttAgent Messaging;
@@ -108,7 +108,7 @@ namespace DataLoggerDevice2
             GlideTouch.Initialize();
          
             storage = new DiskStorage(sdCard);
-            net = new EthernetNetwork(ethernetENC28);
+            net = new WifiNetwork(wifiRS21, "BMC123", "123qweasd");
            
             net.NetworkConnected+=(ip)=>{
                 PrintToLcd("network connected:"+ip);
@@ -339,7 +339,14 @@ namespace DataLoggerDevice2
 
         void SendToMqtt(string Topic, string Message){
             if(Messaging!=null && Messaging.IsReady){
-                Messaging.PublishMessage(Topic,Message);
+                try
+                {
+                    Messaging.PublishMessage(Topic, Message);
+                }
+                catch(Exception ex)
+                {
+                    Debug.Print(ex.ToString());
+                }
             }
         }
 
@@ -549,34 +556,39 @@ namespace DataLoggerDevice2
         }
     }
 
-    public class EthernetNetwork
+    public class WifiNetwork
     {
         public delegate void NetworkConnectedHandler(string IPAddress);
         public event NetworkConnectedHandler NetworkConnected;
 
         public string IpAddress { get; set; }
         bool IsConnected = false;
-        NetworkInterface netif;
-        public EthernetNetwork(EthernetENC28 network)
+        WiFiRS21 wifiRS21;
+        string SSID;
+        string Password;
+
+        public WifiNetwork(WiFiRS21 network,string SSID,string Password)
         {
-            
-            network.UseDHCP();
-            netif = network.NetworkInterface.NetworkInterface;
-            netif.EnableDhcp();
-            netif.EnableDynamicDns();
-            //Connect();
+            this.SSID = SSID;
+            this.Password = Password;
+            this.wifiRS21 = network;
+            //Connect(SSID,Password);
             Thread th = new Thread(new ThreadStart(Connect));
             th.Start();
         }
 
         void Connect()
         {
-            while (netif.IPAddress == "0.0.0.0")
+            wifiRS21.NetworkInterface.Open();
+            wifiRS21.NetworkInterface.EnableDhcp();
+            wifiRS21.NetworkInterface.EnableDynamicDns();
+            wifiRS21.NetworkInterface.Join(SSID,Password);
+            while (wifiRS21.NetworkInterface.IPAddress == "0.0.0.0")
             {
                 Debug.Print("Waiting for DHCP");
                 Thread.Sleep(250);
             }
-            IpAddress = netif.IPAddress;
+            IpAddress = wifiRS21.NetworkInterface.IPAddress;
             IsConnected = true;
             if (NetworkConnected != null)
             {

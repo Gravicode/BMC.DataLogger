@@ -18,9 +18,6 @@ namespace DataLoggerDevice2 {
         /// <summary>The SD Card module using socket 9 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.SDCard sdCard;
         
-        /// <summary>The Ethernet ENC28 module using socket 3 of the mainboard.</summary>
-        private Gadgeteer.Modules.GHIElectronics.EthernetENC28 ethernetENC28;
-        
         /// <summary>The Breakout module using socket 18 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.Breakout breakout;
         
@@ -35,6 +32,9 @@ namespace DataLoggerDevice2 {
         
         /// <summary>The Display NHVN module using sockets 15, 16 and 17 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.DisplayNHVN displayNHVN;
+        
+        /// <summary>The WiFi RS21 module using socket 3 of the mainboard.</summary>
+        private Gadgeteer.Modules.GHIElectronics.WiFiRS21 wifiRS21;
         
         /// <summary>This property provides access to the Mainboard API. This is normally not necessary for an end user program.</summary>
         protected new static GHIElectronics.Gadgeteer.FEZRaptor Mainboard {
@@ -59,12 +59,12 @@ namespace DataLoggerDevice2 {
         
         private void InitializeModules() {
             this.sdCard = new GTM.GHIElectronics.SDCard(9);
-            this.ethernetENC28 = new GTM.GHIElectronics.EthernetENC28(3);
             this.breakout = new GTM.GHIElectronics.Breakout(18);
             this.breakout2 = new GTM.GHIElectronics.Breakout(13);
             this.usbHost = new GTM.GHIElectronics.USBHost(7);
             this.breakout3 = new GTM.GHIElectronics.Breakout(2);
             this.displayNHVN = new GTM.GHIElectronics.DisplayNHVN(15, 16, 17, Socket.Unused, Socket.Unused);
+            this.wifiRS21 = new GTM.GHIElectronics.WiFiRS21(3);
         }
     }
 }
