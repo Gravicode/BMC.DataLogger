@@ -15,9 +15,6 @@ namespace DataLoggerDevice {
     
     public partial class Program : Gadgeteer.Program {
         
-        /// <summary>The Current ACS712 module using socket 13 of the mainboard.</summary>
-        private Gadgeteer.Modules.GHIElectronics.CurrentACS712 currentACS712;
-        
         /// <summary>The SD Card module using socket 9 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.SDCard sdCard;
         
@@ -27,8 +24,11 @@ namespace DataLoggerDevice {
         /// <summary>The Moisture module using socket 18 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.Moisture moisture;
         
-        /// <summary>The GasSense module using socket 2 of the mainboard.</summary>
-        private Gadgeteer.Modules.GHIElectronics.GasSense gasSense;
+        /// <summary>The Relay X1 module using socket 12 of the mainboard.</summary>
+        private Gadgeteer.Modules.GHIElectronics.RelayX1 relayX1;
+        
+        /// <summary>The LightSense module using socket 2 of the mainboard.</summary>
+        private Gadgeteer.Modules.GHIElectronics.LightSense lightSense;
         
         /// <summary>This property provides access to the Mainboard API. This is normally not necessary for an end user program.</summary>
         protected new static GHIElectronics.Gadgeteer.FEZRaptor Mainboard {
@@ -52,11 +52,11 @@ namespace DataLoggerDevice {
         }
         
         private void InitializeModules() {
-            this.currentACS712 = new GTM.GHIElectronics.CurrentACS712(13);
             this.sdCard = new GTM.GHIElectronics.SDCard(9);
-            this.displayNHVN = new GTM.GHIElectronics.DisplayNHVN(15, 16, 17);
+            this.displayNHVN = new GTM.GHIElectronics.DisplayNHVN(15, 16, 17, Socket.Unused, Socket.Unused);
             this.moisture = new GTM.GHIElectronics.Moisture(18);
-            this.gasSense = new GTM.GHIElectronics.GasSense(2);
+            this.relayX1 = new GTM.GHIElectronics.RelayX1(12);
+            this.lightSense = new GTM.GHIElectronics.LightSense(2);
         }
     }
 }

@@ -25,6 +25,7 @@ namespace DataLoggerDevice
 {
     public partial class Program
     {
+        static bool RelayState = false;
         static int Counter = 0;
         //UI
         GHI.Glide.UI.TextBlock txtTime = null;
@@ -58,7 +59,7 @@ namespace DataLoggerDevice
             }
             //set up touch screen
             CapacitiveTouchController.Initialize(GHI.Pins.FEZRaptor.Socket14.Pin3);
-            
+
 
             GlideTouch.Initialize();
             //set glide
@@ -73,15 +74,15 @@ namespace DataLoggerDevice
             //setup grid
             //create grid column
             GvData.AddColumn(new DataGridColumn("Time", 200));
-            GvData.AddColumn(new DataGridColumn("Current", 200));
-            GvData.AddColumn(new DataGridColumn("Gas", 200));
+            GvData.AddColumn(new DataGridColumn("Relay", 200));
+            GvData.AddColumn(new DataGridColumn("Light", 200));
             GvData.AddColumn(new DataGridColumn("Moisture", 200));
 
             // Create a database in memory,
             // file system is possible however!
             myDatabase = new GHI.SQLite.Database();
             myDatabase.ExecuteNonQuery("CREATE Table Sensor" +
-            " (Time TEXT, Current DOUBLE,Gas DOUBLE,Moisture DOUBLE)");
+            " (Time TEXT, Relay DOUBLE,Light DOUBLE,Moisture DOUBLE)");
             //reset database n display
             BtnReset.TapEvent += (object sender) =>
             {
@@ -92,7 +93,7 @@ namespace DataLoggerDevice
             };
 
             Glide.MainWindow = window;
-
+            relayX1.TurnOff();
             UART = new SimpleSerial(GHI.Pins.FEZRaptor.Socket4.SerialPortName, 57600);
             UART.ReadTimeout = 0;
             UART.DataReceived += UART_DataReceived;
@@ -207,7 +208,7 @@ namespace DataLoggerDevice
         }
 
 
-      
+
 
 
         private static void OnTap(object sender)
@@ -222,10 +223,9 @@ namespace DataLoggerDevice
                 counter++;
                 var data = new SensorData()
                 {
-                    
-                    Current = currentACS712.ReadACCurrent(),
-                    Gas = gasSense.ReadProportion(),
-                     Moisture=moisture.ReadMoisture()
+                    Relay = RelayState ? 1 : 0,
+                    Light = lightSense.ReadProportion(),
+                    Moisture = moisture.ReadMoisture()
                 };
                 var jsonStr = Json.NETMF.JsonSerializer.SerializeObject(data);
                 Debug.Print("kirim :" + jsonStr);
@@ -242,23 +242,23 @@ namespace DataLoggerDevice
                         Debug.Print("count:" + count);
                         var hasil = new string(System.Text.Encoding.UTF8.GetChars(rx_data));
                         Debug.Print("read:" + hasil);
-                 
+
                         //mac_rx 2 AABBCC
                     }
                 }
                 var TimeStr = DateTime.Now.ToString("dd/MM/yy HH:mm");
                 //insert to db
-                var item = new DataGridItem(new object[] { TimeStr, data.Current ,data.Gas,data.Moisture});
+                var item = new DataGridItem(new object[] { TimeStr, RelayState ? 1 : 0, data.Light, data.Moisture });
                 //add data to grid
                 GvData.AddItem(item);
                 Counter++;
 
                 GvData.Invalidate();
-          
+
 
                 //add rows to table
-                myDatabase.ExecuteNonQuery("INSERT INTO Sensor (Time, Current, Gas, Moisture)" +
-                " VALUES ('" + TimeStr + "' , " + data.Current +","+ data.Gas+","+data.Moisture + ")");
+                myDatabase.ExecuteNonQuery("INSERT INTO Sensor (Time, Relay, Light, Moisture)" +
+                " VALUES ('" + TimeStr + "' , " + data.Relay + "," + data.Light + "," + data.Moisture + ")");
                 window.Invalidate();
                 if (Counter > 10)
                 {
@@ -419,11 +419,11 @@ namespace DataLoggerDevice
 
     public class SensorData
     {
-        public double Current { get; set; }
-        public double Gas { get; set; }
+        public int Relay { get; set; }
+        public double Light { get; set; }
         public double Moisture { get; set; }
 
-       
+
     }
 
     //driver for touch screen

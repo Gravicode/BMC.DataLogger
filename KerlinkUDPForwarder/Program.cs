@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -13,8 +14,10 @@ namespace KerlinkUDPForwarder
 {
     class Program
     {
+        static string PBIUrl = "";
         static void Main(string[] args)
         {
+            PBIUrl = ConfigurationManager.AppSettings["UrlPBI"];
 
             Console.WriteLine("Start receiving UDP from Kerlink gateway..");
             Task loop = new Task(new Action(Loop));
@@ -28,41 +31,48 @@ namespace KerlinkUDPForwarder
 
             while (true)
             {
-                var remoteEP = new IPEndPoint(IPAddress.Any, 8888);
-                var data = udpServer.Receive(ref remoteEP); // listen on port 8888
-
-                var datastr = System.Text.Encoding.Default.GetString(data);
-                Console.WriteLine("receive data from " + remoteEP.ToString());
-                Console.WriteLine("data: " + datastr);
-                var obj = JsonConvert.DeserializeObject<RootObject>(datastr);
-                if (obj != null)
+                try
                 {
-                    byte[] databyte = Convert.FromBase64String(obj.rx.userdata.payload);
-                    string decodedString = Encoding.UTF8.GetString(databyte);
-                    var originalValue = Unpack(decodedString);
-                    Console.WriteLine("unpack :" + originalValue);
-                    var sensorValue = JsonConvert.DeserializeObject<SensorData>(originalValue);
-                    sensorValue.Tanggal = DateTime.Now;
-                    //call power bi api
-                    SendToPowerBI(sensorValue);
-                    //send data to gateway
-                    {
-                        Transmitter.ObjMoteTx objtx = new Transmitter.ObjMoteTx();
-                        objtx.tx = new Transmitter.Tx();
-                        objtx.tx.moteeui = "00000000AAABBBEE";
-                        objtx.tx.txmsgid = "000000000001";
-                        objtx.tx.trycount = 5;
-                        objtx.tx.txsynch = false;
-                        objtx.tx.ackreq = false;
-                        //string to hex str, hex str to base64 string
-                        objtx.tx.userdata = new Transmitter.Userdata() { payload = "Njg2NTZjNmM2ZjIwNjM2ZjZkNzA3NTc0NjU3Mg==", port = 5 };
-                        var jsonStr = JsonConvert.SerializeObject(objtx);
-                        byte[] bytes = Encoding.ASCII.GetBytes(jsonStr);
-                        udpServer.Send(bytes, bytes.Length, remoteEP);
+                    var remoteEP = new IPEndPoint(IPAddress.Any, 8888);
+                    var data = udpServer.Receive(ref remoteEP); // listen on port 8888
 
+                    var datastr = System.Text.Encoding.Default.GetString(data);
+                    Console.WriteLine("receive data from " + remoteEP.ToString());
+                    Console.WriteLine("data: " + datastr);
+                    var obj = JsonConvert.DeserializeObject<RootObject>(datastr);
+                    if (obj != null)
+                    {
+                        byte[] databyte = Convert.FromBase64String(obj.rx.userdata.payload);
+                        string decodedString = Encoding.UTF8.GetString(databyte);
+                        var originalValue = Unpack(decodedString);
+                        Console.WriteLine("unpack :" + originalValue);
+                        var sensorValue = JsonConvert.DeserializeObject<SensorData>(originalValue);
+                        sensorValue.Tanggal = DateTime.Now;
+                        //call power bi api
+                        SendToPowerBI(sensorValue);
+                        //send data to gateway
+                        {
+                            Transmitter.ObjMoteTx objtx = new Transmitter.ObjMoteTx();
+                            objtx.tx = new Transmitter.Tx();
+                            objtx.tx.moteeui = "00000000AAABBBEE";
+                            objtx.tx.txmsgid = "000000000001";
+                            objtx.tx.trycount = 5;
+                            objtx.tx.txsynch = false;
+                            objtx.tx.ackreq = false;
+                            //string to hex str, hex str to base64 string
+                            objtx.tx.userdata = new Transmitter.Userdata() { payload = "Njg2NTZjNmM2ZjIwNjM2ZjZkNzA3NTc0NjU3Mg==", port = 5 };
+                            var jsonStr = JsonConvert.SerializeObject(objtx);
+                            byte[] bytes = Encoding.ASCII.GetBytes(jsonStr);
+                            udpServer.Send(bytes, bytes.Length, remoteEP);
+                        }
                     }
-                    Thread.Sleep(5000);
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("error -> " + ex.Message);
+                }
+                Thread.Sleep(5000);
+
 
 
 
@@ -85,7 +95,8 @@ namespace KerlinkUDPForwarder
 
         static async void SendToPowerBI(SensorData data)
         {
-            var url = "https://api.powerbi.com/beta/e4a5cd36-e58f-4f98-8a1a-7a8e545fc65a/datasets/c3152879-fd74-4ba6-94aa-2b9b7111005f/rows?key=AUL%2FVTsGwsmJGzP28v7ah5EInDrjg7rTXx4b1IarBiTTcuB62zXzkG8QGoCZuJwyICzydqAT6ieTzGxsMXMETQ%3D%3D";
+            var url = PBIUrl;
+            //"https://api.powerbi.com/beta/e4a5cd36-e58f-4f98-8a1a-7a8e545fc65a/datasets/c3152879-fd74-4ba6-94aa-2b9b7111005f/rows?key=AUL%2FVTsGwsmJGzP28v7ah5EInDrjg7rTXx4b1IarBiTTcuB62zXzkG8QGoCZuJwyICzydqAT6ieTzGxsMXMETQ%3D%3D";
             var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
             var res = await client.PostAsync(url, content, CancellationToken.None);
             if (res.IsSuccessStatusCode)
@@ -179,13 +190,22 @@ namespace KerlinkUDPForwarder
     {
         public Rx rx { get; set; }
     }
-
+    /*
     public class SensorData
     {
         public DateTime Tanggal { get; set; }
         public double Humid { get; set; }
         public double Light { get; set; }
         public double Temp { get; set; }
+    }*/
+    public class SensorData
+    {
+        public DateTime Tanggal { get; set; }
+        public int Relay { get; set; }
+        public double Light { get; set; }
+        public double Moisture { get; set; }
+
+
     }
 
 }
