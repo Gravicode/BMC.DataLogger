@@ -168,13 +168,22 @@ namespace DataLoggerDevice
                         string hex = _dataInLora[index].Substring(9);
 
                         //update display
-                        txtMessage.Text = hex;//Unpack(hex);
-                        txtMessage.Invalidate();
-                        window.Invalidate();
+                        
                         byte[] data = StringToByteArrayFastest(hex);
                         string decoded = new String(UTF8Encoding.UTF8.GetChars(data));
                         Debug.Print("decoded:" + decoded);
-
+                        txtMessage.Text = decoded;//Unpack(hex);
+                        /*
+                        var state =new string( new char[] { decoded[decoded.Length - 1] });
+                        var relaystate = int.Parse(state);
+                        RelayState = relaystate == 1 ? true : false;
+                        if (RelayState) 
+                            relayX1.TurnOn();
+                        else
+                            relayX1.TurnOff();
+                        */
+                        txtMessage.Invalidate();
+                        window.Invalidate();
                     }
                 }
             }

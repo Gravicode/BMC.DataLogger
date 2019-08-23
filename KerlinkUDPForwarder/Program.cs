@@ -28,7 +28,7 @@ namespace KerlinkUDPForwarder
         static void Loop()
         {
             UdpClient udpServer = new UdpClient(8888);
-
+            bool relay = false;
             while (true)
             {
                 try
@@ -51,6 +51,7 @@ namespace KerlinkUDPForwarder
                         //call power bi api
                         SendToPowerBI(sensorValue);
                         //send data to gateway
+                        
                         {
                             Transmitter.ObjMoteTx objtx = new Transmitter.ObjMoteTx();
                             objtx.tx = new Transmitter.Tx();
@@ -59,8 +60,14 @@ namespace KerlinkUDPForwarder
                             objtx.tx.trycount = 5;
                             objtx.tx.txsynch = false;
                             objtx.tx.ackreq = false;
+
                             //string to hex str, hex str to base64 string
-                            objtx.tx.userdata = new Transmitter.Userdata() { payload = "Njg2NTZjNmM2ZjIwNjM2ZjZkNzA3NTc0NjU3Mg==", port = 5 };
+                            relay = !relay;
+                            byte[] ba = Encoding.Default.GetBytes("relay:"+(relay?"1":"0"));
+                            var hexString = BitConverter.ToString(ba);
+                            hexString = hexString.Replace("-", "");
+                            hexString = Base64Encode(hexString);
+                            objtx.tx.userdata = new Transmitter.Userdata() { payload = hexString, port = 5 };//"Njg2NTZjNmM2ZjIwNjM2ZjZkNzA3NTc0NjU3Mg==" -> hello computer
                             var jsonStr = JsonConvert.SerializeObject(objtx);
                             byte[] bytes = Encoding.ASCII.GetBytes(jsonStr);
                             udpServer.Send(bytes, bytes.Length, remoteEP);
@@ -79,6 +86,11 @@ namespace KerlinkUDPForwarder
             }
 
 
+        }
+        public static string Base64Encode(string plainText)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return System.Convert.ToBase64String(plainTextBytes);
         }
         private static HttpClient _client;
 
